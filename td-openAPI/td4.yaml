@@ -1,0 +1,194 @@
+openapi: 3.0.0
+info:
+  title: API de Gestion des Clients et Plats
+  version: 1.0.0
+paths:
+  /customers:
+    get:
+      summary: Récupérer une liste de clients
+      description: Obtenez une liste paginée de clients.
+      parameters:
+        - name: page
+          in: query
+          required: true
+          description: Le numéro de la page à récupérer.
+          schema:
+            type: integer
+        - name: pageSize
+          in: query
+          required: true
+          description: Le nombre de clients par page.
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Une liste paginée de clients
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Customer"
+    post:
+      summary: Créer un nouveau client
+      description: Créez un nouveau client. L'identifiant est généré par le serveur.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CustomerInput"
+      responses:
+        "201":
+          description: Client créé avec succès
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Customer"
+  /customers/{customerId}/orders:
+    get:
+      summary: Récupérer les commandes d'un client
+      description: Obtenez la liste des commandes effectuées par un client spécifique.
+      parameters:
+        - name: customerId
+          in: path
+          required: true
+          description: L'identifiant du client.
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Une liste des commandes du client
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Order"
+    post:
+      summary: Créer une nouvelle commande pour un client
+      description: Créez une nouvelle commande pour un client spécifique.
+      parameters:
+        - name: customerId
+          in: path
+          required: true
+          description: L'identifiant du client.
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/OrderInput"
+      responses:
+        "201":
+          description: Commande créée avec succès
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Order"
+    put:
+      summary: Mettre à jour une commande pour un client
+      description: Mettez à jour les détails d'une commande existante pour un client spécifique.
+      parameters:
+        - name: customerId
+          in: path
+          required: true
+          description: L'identifiant du client.
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Order"
+      responses:
+        "200":
+          description: Commande mise à jour avec succès
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Order"
+components:
+  schemas:
+    Customer:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Identifiant unique du client
+        name:
+          type: string
+          description: Nom du client
+        email:
+          type: string
+          description: Email du client
+    CustomerInput:
+      type: object
+      properties:
+        name:
+          type: string
+          description: Nom du client
+        email:
+          type: string
+          description: Email du client
+    Meal:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Identifiant unique du plat
+        name:
+          type: string
+          description: Nom du plat
+        price:
+          type: number
+          format: float
+          description: Prix du plat
+    MealInput:
+      type: object
+      properties:
+        name:
+          type: string
+          description: Nom du plat
+        price:
+          type: number
+          format: float
+          description: Prix du plat
+    Order:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Identifiant unique de la commande
+        reference:
+          type: string
+          description: Référence unique de la commande
+        meals:
+          type: array
+          items:
+            $ref: "#/components/schemas/MealWithQuantity"
+        orderDatetime:
+          type: string
+          format: date-time
+          description: Date et heure de la commande
+    OrderInput:
+      type: object
+      properties:
+        reference:
+          type: string
+          description: Référence unique de la commande
+        meals:
+          type: array
+          items:
+            $ref: "#/components/schemas/MealWithQuantity"
+    MealWithQuantity:
+      type: object
+      properties:
+        meal:
+          $ref: "#/components/schemas/Meal"
+        quantity:
+          type: integer
+          description: Quantité commandée pour ce plat

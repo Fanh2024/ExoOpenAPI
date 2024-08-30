@@ -1,0 +1,102 @@
+openapi: 3.0.0
+info:
+  title: API Gestion des Clients
+  version: 1.0.0
+paths:
+  /customers/{customerId}:
+    put:
+      summary: Met à jour complètement un client
+      description: Met à jour toutes les propriétés d'un client existant.
+      parameters:
+        - name: customerId
+          in: path
+          required: true
+          description: Identifiant unique du client
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - id
+                - name
+                - age
+              properties:
+                id:
+                  type: string
+                  description: Identifiant unique du client
+                name:
+                  type: string
+                  description: Nom du client
+                age:
+                  type: integer
+                  description: Âge du client
+      responses:
+        "200":
+          description: Client mis à jour avec succès
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Customer"
+        "400":
+          description: Mauvaise requête - données manquantes ou incorrectes
+        "404":
+          description: Client non trouvé
+
+    patch:
+      summary: Met à jour partiellement un client
+      description: Modifie partiellement un client existant.
+      parameters:
+        - name: customerId
+          in: path
+          required: true
+          description: Identifiant unique du client
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                id:
+                  type: string
+                  description: Identifiant unique du client
+                name:
+                  type: string
+                  description: Nom du client
+                age:
+                  type: integer
+                  description: Âge du client
+              required:
+                - id # ID est requis pour identifier le client à modifier
+      responses:
+        "200":
+          description: Client mis à jour partiellement avec succès
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Customer"
+        "400":
+          description: Mauvaise requête - données manquantes ou incorrectes
+        "404":
+          description: Client non trouvé
+
+components:
+  schemas:
+    Customer:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Identifiant unique du client
+        name:
+          type: string
+          description: Nom du client
+        age:
+          type: integer
+          description: Âge du client

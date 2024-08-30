@@ -1,0 +1,103 @@
+openapi: 3.0.0
+info:
+  title: Customers API
+  version: 1.0.0
+paths:
+  /customers:
+    get:
+      summary: Obtenir la liste des clients
+      description: Cette opération retourne une liste paginée de clients.
+      parameters:
+        - name: page
+          in: query
+          required: true
+          description: Le numéro de la page à retourner.
+          schema:
+            type: integer
+        - name: pageSize
+          in: query
+          required: true
+          description: Le nombre de clients par page.
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Liste paginée des clients
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Customer"
+    post:
+      summary: Créer de nouveaux clients
+      description: Cette opération permet de créer un ou plusieurs clients. L'identifiant est généré par le serveur.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: "#/components/schemas/CustomerInput"
+      responses:
+        "201":
+          description: Clients créés avec succès
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Customer"
+    put:
+      summary: Mettre à jour un client existant
+      description: Cette opération permet de mettre à jour un client existant.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Customer"
+      responses:
+        "200":
+          description: Client mis à jour avec succès
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Customer"
+    delete:
+      summary: Supprimer un client
+      description: Cette opération permet de supprimer un client par son identifiant.
+      parameters:
+        - name: id
+          in: query
+          required: true
+          description: L'identifiant du client à supprimer.
+          schema:
+            type: string
+      responses:
+        "204":
+          description: Client supprimé avec succès
+components:
+  schemas:
+    Customer:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Identifiant unique du client
+        name:
+          type: string
+          description: Nom du client
+        email:
+          type: string
+          description: Email du client
+    CustomerInput:
+      type: object
+      properties:
+        name:
+          type: string
+          description: Nom du client
+        email:
+          type: string
+          description: Email du client

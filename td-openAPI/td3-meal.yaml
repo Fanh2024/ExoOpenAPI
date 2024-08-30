@@ -1,0 +1,85 @@
+openapi: 3.0.0
+info:
+  title: Meal
+  version: 1.0.0
+paths:
+  /meals:
+    get:
+      summary: Récupérer une liste de plats
+      description: Obtenez une liste paginée de plats.
+      parameters:
+        - name: page
+          in: query
+          required: true
+          description: Le numéro de la page à récupérer.
+          schema:
+            type: integer
+        - name: pageSize
+          in: query
+          required: true
+          description: Le nombre de plats par page.
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Une liste paginée de plats
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Meal"
+    put:
+      summary: Mettre à jour un plat existant
+      description: Mettez à jour les détails d'un plat existant.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Meal"
+      responses:
+        "200":
+          description: Plat mis à jour avec succès
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Meal"
+    delete:
+      summary: Supprimer un plat
+      description: Supprimez un plat par son identifiant.
+      parameters:
+        - name: id
+          in: query
+          required: true
+          description: L'identifiant du plat à supprimer.
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Plat supprimé avec succès
+components:
+  schemas:
+    Meal:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Identifiant unique du plat
+        name:
+          type: string
+          description: Nom du plat
+        price:
+          type: number
+          format: float
+          description: Prix du plat
+#     MealInput:
+#       type: object
+#       properties:
+#         name:
+#           type: string
+#           description: Nom du plat
+#         price:
+#           type: number
+#           format: float
+#           description: Prix du plat
